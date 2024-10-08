@@ -3,45 +3,71 @@ import cv2
 import glob
 
 # Définir la taille de l'échiquier (nombre de coins internes)
-CHECKERBOARD = (7,4)
+CHECKERBOARD = (9,6)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-# Préparer les points objets, comme (0,0,0), (1,0,0), (2,0,0) ....,(8,5,0)
+# Préparer les points objets
 objp = np.zeros((CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
 objp[:,:2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1,2)
 
-# Arrays pour stocker les points objets et images de toutes les images
-objpoints = [] # points 3d dans l'espace réel
-imgpoints = [] # points 2d dans le plan image
+# Arrays pour stocker les points objets et images
+objpoints = []
+imgpoints = []
+
+# Fonction pour redimensionner l'image
+def resize_image(image, width=None, height=None, inter=cv2.INTER_AREA):
+    dim = None
+    (h, w) = image.shape[:2]
+
+    if width is None and height is None:
+        return image
+
+    if width is None:
+        r = height / float(h)
+        dim = (int(w * r), height)
+    else:
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    resized = cv2.resize(image, dim, interpolation=inter)
+    return resized
 
 # Charger les images de l'échiquier
 images = glob.glob('chessphotos/*.jpg')
-
 if len(images) == 0:
     print("Aucune image trouvée dans le dossier 'chessphotos'. Assurez-vous d'avoir des images .jpg dans ce dossier.")
     exit()
 
 print(f"Nombre total d'images trouvées : {len(images)}")
-
 successful_calibrations = 0
+
+cv2.namedWindow('Calibration Image', cv2.WINDOW_NORMAL)
+
 for i, fname in enumerate(images):
     print(f"\nTraitement de l'image {i+1}/{len(images)} : {fname}")
     img = cv2.imread(fname)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
+
     # Trouver les coins de l'échiquier
     ret, corners = cv2.findChessboardCorners(gray, CHECKERBOARD, None)
-    
+
     if ret == True:
         objpoints.append(objp)
         corners2 = cv2.cornerSubPix(gray, corners, (11,11), (-1,-1), criteria)
         imgpoints.append(corners2)
-        
+
         # Dessiner et afficher les coins
         img = cv2.drawChessboardCorners(img, CHECKERBOARD, corners2, ret)
-        cv2.imshow('img', img)
-        cv2.waitKey(500)
         
+        # Redimensionner l'image pour l'affichage
+        display_img = resize_image(img, width=1024)  # Vous pouvez ajuster cette valeur
+        
+        cv2.imshow('Calibration Image', display_img)
+        cv2.resizeWindow('Calibration Image', display_img.shape[1], display_img.shape[0])
+        key = cv2.waitKey(500) & 0xFF
+        if key == 27:  # Touche Echap pour quitter
+            break
+
         print(f"  Échiquier détecté avec succès. {len(corners2)} coins trouvés.")
         successful_calibrations += 1
     else:
