@@ -1,5 +1,5 @@
-camera_matrix_file: "camera_matrix.npy"
-dist_coeffs_file: "dist_coeffs.npy"
+camera_matrix_file: "camera_calibration/camera_matrix.npy"
+dist_coeffs_file: "camera_calibration/dist_coeffs.npy"
 marker_length: 0.05
 fixed_marker_ids: [20, 21, 22, 23]
 robot_marker_id: 36
