@@ -11,7 +11,7 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board, robo
     if not np.any(board_indices):
         display_info(frame, ["No board markers detected"], color=(0, 0, 255))
         return None
-
+    
     board_corners = [corners[i] for i in range(len(ids)) if board_indices[i]]
     board_ids = ids[board_indices]
 
@@ -25,13 +25,13 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board, robo
     except Exception as e:
         display_info(frame, [f"Error estimating board pose: {e}"], color=(0, 0, 255))
         return None
-
+    
     # Estimer la pose du robot
     robot_indices = np.where(ids == config.robot_marker_id)[0]
     if len(robot_indices) == 0:
         display_info(frame, [f"Robot marker (ID: {config.robot_marker_id}) not detected"], color=(0, 0, 255))
         return None
-
+    
     try:
         obj_points = robot_board.getObjPoints()
         success_robot, rvec_robot, tvec_robot = cv2.solvePnP(
@@ -49,7 +49,7 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board, robo
         print(error_msg)  # Log to console
         display_info(frame, [error_msg], color=(0, 0, 255))
         return None
-
+    
     # Calculer la pose relative du robot par rapport au board
     R_cw = R.from_rotvec(rvec_board.flatten())
     t_cw = tvec_board.flatten()
@@ -78,7 +78,7 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board, robo
     display_info(frame, info)
 
     # Dessiner les axes pour le board et le robot
-    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, 0.1)
-    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_robot, tvec_robot, 0.1)
-
+    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, 100)
+    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_robot, tvec_robot, 100)
+    
     return RobotPose(tuple(t_wr), R_wr, time.time())

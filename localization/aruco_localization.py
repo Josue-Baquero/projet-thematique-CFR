@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-
 from .robot_pose import RobotPose
 from utils.config import Config
 from utils.markers import MarkerBoards
@@ -9,7 +8,7 @@ from visualization.display import display_info, resize_frame
 from camera.camera_utils import get_ip_webcam_frame, setup_window
 from processing import robot_mode, board_mode, all_mode
 from .heading import get_heading_angle
-
+import serial
 
 class ArucoLocalization:
     def __init__(self, config: Config):
@@ -27,17 +26,7 @@ class ArucoLocalization:
         setup_window(self.window_name)
         cv2.waitKey(1)  # Ajoutez cette ligne pour s'assurer que la fenêtre est créée
 
-    def setup_board(self):
-        objPoints = np.array([
-            [[-0.1, -0.1, 0], [0.1, -0.1, 0], [0.1, 0.1, 0], [-0.1, 0.1, 0]],  # Marker 20
-            [[0.2, -0.1, 0], [0.4, -0.1, 0], [0.4, 0.1, 0], [0.2, 0.1, 0]],    # Marker 21
-            [[-0.1, 0.2, 0], [0.1, 0.2, 0], [0.1, 0.4, 0], [-0.1, 0.4, 0]],    # Marker 22
-            [[0.2, 0.2, 0], [0.4, 0.2, 0], [0.4, 0.4, 0], [0.2, 0.4, 0]]       # Marker 23
-        ], dtype=np.float32)
-        return cv2.aruco.Board(objPoints, self.aruco_dict, np.array([20, 21, 22, 23]))
-
     def setup_serial(self):
-        import serial
         try:
             return serial.Serial(self.config.serial_port, self.config.serial_baudrate)
         except serial.SerialException as e:
@@ -47,11 +36,11 @@ class ArucoLocalization:
 
     def process_frame(self, frame: np.ndarray, mode: str) -> RobotPose:
         corners, ids, _ = self.aruco_detector.detectMarkers(frame)
-        
+
         if ids is None or len(ids) == 0:
             display_info(frame, ["No markers detected"], color=(0, 0, 255))
             return None
-
+        
         if mode == "robot":
             return robot_mode.process(frame, corners, ids, self.camera_matrix, self.dist_coeffs,
                                       self.config, self.robot_board)
@@ -73,12 +62,12 @@ class ArucoLocalization:
             print(f"  Matrix: {heading_angles['matrix']:.2f}")
             print(f"  Euler: {heading_angles['euler']:.2f}")
             print(f"  Rotvec: {heading_angles['rotvec']:.2f}")
-        
+
         elif mode == "board":
             print(f"\nBoard pose in camera frame:")
             print(f"Position: ({pose.position[0]:.6f}, {pose.position[1]:.6f}, {pose.position[2]:.6f})")
             print(f"Orientation (Euler angles): {pose.orientation.as_euler('xyz', degrees=True)}")
-        
+
         elif mode == "all":
             print(f"\nRobot pose in board frame:")
             print(f"Position: ({pose.position[0]:.6f}, {pose.position[1]:.6f}, {pose.position[2]:.6f})")

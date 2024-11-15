@@ -1,9 +1,9 @@
 camera_matrix_file: "camera_calibration/camera_matrix.npy"
 dist_coeffs_file: "camera_calibration/dist_coeffs.npy"
-marker_length: 0.05
+marker_length: 106
 fixed_marker_ids: [20, 21, 22, 23]
 robot_marker_id: 36
-camera_url: "http://172.18.36.130:8080/shot.jpg"
+camera_url: "http://192.168.210.115:8080/shot.jpg"
 use_serial: false
 # Les lignes suivantes sont optionnelles si use_serial est false
 # serial_port: "COM9"

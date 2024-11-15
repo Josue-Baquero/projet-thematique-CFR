@@ -10,7 +10,7 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board):
     if not np.any(board_indices):
         display_info(frame, ["No board markers detected"], color=(0, 0, 255))
         return None
-
+    
     board_corners = [corners[i] for i in range(len(ids)) if board_indices[i]]
     board_ids = ids[board_indices]
 
@@ -33,7 +33,7 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board):
         print(error_msg)  # Log to console
         display_info(frame, [error_msg], color=(0, 0, 255))
         return None
-
+    
     R_cw = R.from_rotvec(rvec_board.flatten())
     t_cw = tvec_board.flatten()
 
@@ -44,6 +44,6 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board):
     ]
     display_info(frame, info)
 
-    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, 0.1)
+    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, 100)
 
     return RobotPose(tuple(t_cw), R_cw, time.time())
