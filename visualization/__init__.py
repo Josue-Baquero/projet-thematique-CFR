@@ -1,1 +1,1 @@
-from .display import display_info, resize_frame
+from .display import display_info, setup_window,  resize_frame, display_pose

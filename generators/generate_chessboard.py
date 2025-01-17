@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     chessboard = generate_chessboard(square_size, width, height)
 
-    cv2.imwrite('images/calibration/chessboard.png', chessboard)
+    cv2.imwrite('images/markers/chessboard.png', chessboard)
 
     cv2.imshow('Chessboard', chessboard)
     cv2.waitKey(0)

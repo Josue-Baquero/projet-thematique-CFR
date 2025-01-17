@@ -1,6 +1,14 @@
 import yaml
 
 class Config:
+    """
+   Classe de gestion de la configuration du système de localisation.
+   
+   Cette classe a pour objectif de :
+   - Charger et valider le fichier de configuration YAML
+
+    """
+
     def __init__(self, config_file: str):
         with open(config_file, 'r') as f:
             config = yaml.safe_load(f)
@@ -10,7 +18,5 @@ class Config:
         self.fixed_marker_ids = config['fixed_marker_ids']
         self.robot_marker_id = config['robot_marker_id']
         self.camera_url = config['camera_url']
-        self.use_serial = config.get('use_serial', False)
-        if self.use_serial:
-            self.serial_port = config['serial_port']
-            self.serial_baudrate = config['serial_baudrate']
+        self.axis_length = config['axis_length']
+        self.use_real_board = config.get('use_real_board', True)

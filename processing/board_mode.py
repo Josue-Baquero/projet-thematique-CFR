@@ -3,7 +3,6 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from localization.robot_pose import RobotPose
 from visualization.display import display_info
-import time
 
 def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board):
     board_indices = np.isin(ids, config.fixed_marker_ids)
@@ -44,6 +43,6 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, board):
     ]
     display_info(frame, info)
 
-    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, 100)
+    cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_board, tvec_board, config.axis_length)
 
-    return RobotPose(tuple(t_cw), R_cw, time.time())
+    return RobotPose(tuple(t_cw), R_cw)

@@ -3,7 +3,6 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from localization.robot_pose import RobotPose
 from visualization.display import display_info
-import time
 
 def process(frame, corners, ids, camera_matrix, dist_coeffs, config, robot_board):
     robot_indices = np.where(ids == config.robot_marker_id)[0]
@@ -33,9 +32,9 @@ def process(frame, corners, ids, camera_matrix, dist_coeffs, config, robot_board
         ]
         display_info(frame, info)
 
-        cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_robot, tvec_robot, 100)
+        cv2.drawFrameAxes(frame, camera_matrix, dist_coeffs, rvec_robot, tvec_robot, config.axis_length)
 
-        return RobotPose(tuple(t_cr), R_cr, time.time())
+        return RobotPose(tuple(t_cr), R_cr)
     except Exception as e:
         error_msg = f"Error estimating robot pose: {str(e)}"
         print(error_msg)  # Log to console

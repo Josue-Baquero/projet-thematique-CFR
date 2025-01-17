@@ -1,10 +1,29 @@
+# Fichier contenant la matrice de calibration de la caméra (corrige la distorsion)
 camera_matrix_file: "camera_calibration/camera_matrix.npy"
+
+# Fichier contenant les coefficients de distorsion de la caméra
 dist_coeffs_file: "camera_calibration/dist_coeffs.npy"
-marker_length: 106
+
+# IDs des marqueurs ArUco fixes sur le plateau:
+# 20: coin haut gauche
+# 21: coin haut droit
+# 22: coin bas gauche
+# 23: coin bas droit
 fixed_marker_ids: [20, 21, 22, 23]
+
+# ID du marqueur ArUco placé sur le robot
 robot_marker_id: 36
-camera_url: "http://192.168.210.115:8080/shot.jpg"
-use_serial: false
-# Les lignes suivantes sont optionnelles si use_serial est false
-# serial_port: "COM9"
-# serial_baudrate: 9600
+
+# URL de la caméra IP (application IP Webcam sur smartphone)
+camera_url: "http://192.168.1.147:8080/shot.jpg"
+
+# true: utilise le grand plateau Coupe de France
+# false: utilise le petit plateau de test
+use_real_board: True
+
+# Taille physique du marqueur DU ROBOT (en mm), pas forcément ceux du plateau qui sont par défaut définis à 100mm.
+# Pour modifier la taille de ceux du plateau, il faudra modifier objPoints dans setup_board() de la classe MarkerBoards
+marker_length: 100
+
+# Longueur en pixels des axes de visualisation (purement cosmétique)
+axis_length: 100
