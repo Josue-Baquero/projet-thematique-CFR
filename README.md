@@ -8,8 +8,6 @@ Ce projet implémente un système de localisation robotique utilisant des marque
 .
 ├── .git/                      # Dossier de gestion de version Git
 ├── .venv/                     # Environnement virtuel Python
-├── .vscode/                   # Configuration VSCode
-├── __pycache__/              # Cache Python
 │
 ├── camera/                    # Gestion de la caméra IP
 │   ├── __init__.py           # Expose get_ip_webcam_frame
@@ -63,8 +61,8 @@ Ce projet implémente un système de localisation robotique utilisant des marque
 ### 1. Cloner le Projet
 
 ```bash
-git clone <URL_DU_REPO>
-cd <NOM_DU_DOSSIER>
+git clone https://github.com/Josue-Baquero/projet-thematique-CFR
+cd projet-thematique-CFR
 ```
 
 ### 2. Configuration de l'Environnement
